@@ -14,9 +14,6 @@
       "de.fisch37.fischyfriends.FischyFriends"
     ]
   },
-  "mixins": [
-    "fischyfriends.mixins.json"
-  ],
   "depends": {
     "fabricloader": ">=${loader_version}",
     "fabric": "*",
