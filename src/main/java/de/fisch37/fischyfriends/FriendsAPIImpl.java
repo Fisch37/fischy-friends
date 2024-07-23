@@ -24,6 +24,11 @@ class FriendsAPIImpl implements FriendsAPI {
     }
 
     @Override
+    public boolean areFriends(UUID a, UUID b) {
+        return STATE.areFriends(a, b);
+    }
+
+    @Override
     public Collection<CachedPlayer> getPlayers() {
         return new ArrayList<>(STATE.getPlayers());
     }
