@@ -24,6 +24,6 @@ public record CancelFriendRequest(UUID targetOrOrigin) implements CustomPayload 
 
     static void register() {
         PayloadTypeRegistry.playC2S().register(FRIEND_REQUEST_CANCEL, PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(FRIEND_REQUEST_CANCEL, PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(FRIEND_REQUEST_CANCEL, PACKET_CODEC);
     }
 }

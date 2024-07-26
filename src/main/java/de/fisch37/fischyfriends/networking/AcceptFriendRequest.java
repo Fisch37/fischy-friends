@@ -23,6 +23,6 @@ public record AcceptFriendRequest(UUID targetOrOrigin) implements CustomPayload 
 
     static void register() {
         PayloadTypeRegistry.playC2S().register(FRIEND_REQUEST_ACCEPT, PACKET_CODEC);
-        PayloadTypeRegistry.playC2S().register(FRIEND_REQUEST_ACCEPT, PACKET_CODEC);
+        PayloadTypeRegistry.playS2C().register(FRIEND_REQUEST_ACCEPT, PACKET_CODEC);
     }
 }
