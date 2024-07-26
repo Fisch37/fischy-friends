@@ -14,7 +14,10 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.UUID;
+
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
+import static de.fisch37.fischyfriends.FischyFriends.LOGGER;
 import static net.minecraft.server.command.CommandManager.literal;
 import static net.minecraft.server.command.CommandManager.argument;
 
@@ -121,7 +124,16 @@ public abstract class FriendCommand {
         return 0;
     }
 
-    private static int listFriends(CommandContext<ServerCommandSource> context) {
+    private static int listFriends(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+        for(UUID friendUuid : getAPI().getFriends(player)) {
+            CachedPlayer friend = getAPI().getPlayer(friendUuid);
+            if (friend == null) {
+                LOGGER.warn("Cache miss for {} in listFriends", friendUuid);
+                continue;
+            }
+            context.getSource().sendFeedback(() -> Text.literal(friend.name()), false);
+        }
         return 0;
     }
 
