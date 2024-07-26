@@ -293,7 +293,7 @@ public abstract class FriendCommand {
 
     private static int listRequestsIncoming(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerCommandSource source = context.getSource();
-        List<FriendRequest> requests = getAPI().getRequestManager().getOpenRequestsForPlayer(
+        Collection<FriendRequest> requests = getAPI().getRequestManager().getOpenRequestsForPlayer(
                 source.getPlayerOrThrow().getUuid()
         );
         source.sendFeedback(

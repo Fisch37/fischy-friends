@@ -11,7 +11,7 @@ import de.fisch37.fischyfriends.api.FriendRequestManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
@@ -35,7 +35,7 @@ public class FriendRequestSuggestionProvider implements SuggestionProvider<Serve
         ServerPlayerEntity player = context.getSource().getPlayer();
         if (player != null) {
             FriendRequestManager requestManager = FischyFriends.getAPI().getRequestManager();
-            List<FriendRequest> requests = forTarget
+            Collection<FriendRequest> requests = forTarget
                     ? requestManager.getOpenRequestsForPlayer(player.getUuid())
                     : requestManager.getOpenRequestsByPlayer(player.getUuid());
 

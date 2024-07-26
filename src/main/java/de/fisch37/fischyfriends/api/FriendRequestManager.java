@@ -2,7 +2,7 @@ package de.fisch37.fischyfriends.api;
 
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 public interface FriendRequestManager {
@@ -14,11 +14,11 @@ public interface FriendRequestManager {
 
     void denyFriendRequest(FriendRequest request);
 
-    List<FriendRequest> getOpenRequests();
+    Collection<FriendRequest> getOpenRequests();
 
-    List<FriendRequest> getOpenRequestsForPlayer(UUID target);
+    Collection<FriendRequest> getOpenRequestsForPlayer(UUID target);
 
-    List<FriendRequest> getOpenRequestsByPlayer(UUID origin);
+    Collection<FriendRequest> getOpenRequestsByPlayer(UUID origin);
 
     void registerListener(@NotNull EventType eventType, @NotNull EventHandler listener);
 
