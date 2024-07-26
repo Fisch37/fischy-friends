@@ -19,4 +19,6 @@ public interface FriendsAPI {
     boolean areFriends(UUID a, UUID b);
 
     Collection<CachedPlayer> getPlayers();
+
+    FriendRequestManager getRequestManager();
 }

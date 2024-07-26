@@ -1,6 +1,7 @@
 package de.fisch37.fischyfriends;
 
 import de.fisch37.fischyfriends.api.CachedPlayer;
+import de.fisch37.fischyfriends.api.FriendRequest;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtList;
@@ -14,6 +15,8 @@ import java.util.*;
 class FriendsState extends PersistentState {
     private final Map<UUID, CachedPlayer> players = new HashMap<>();
     private final Hashtable<UUID, Set<UUID>> friendsMap = new Hashtable<>();
+    private final Hashtable<UUID, Set<FriendRequest>> outboundRequest = new Hashtable<>();
+    private final Hashtable<UUID, Set<FriendRequest>> inboundRequests = new Hashtable<>();
 
     private void setPlayer(CachedPlayer player) {
         players.put(player.uuid(), player);
@@ -36,6 +39,20 @@ class FriendsState extends PersistentState {
         return getAllFriends(a).remove(b)
                 || getAllFriends(b).remove(a)
                 ;
+    }
+
+    private Set<FriendRequest> getFriendRequests(Map<UUID, Set<FriendRequest>> map, UUID key) {
+        return map.computeIfAbsent(key, k -> new HashSet<>());
+    }
+
+    void addFriendRequest(FriendRequest request) {
+        getFriendRequests(outboundRequest, request.origin()).add(request);
+        getFriendRequests(inboundRequests, request.target()).add(request);
+    }
+
+    void removeFriendRequest(FriendRequest request) {
+        getFriendRequests(outboundRequest, request.origin()).remove(request);
+        getFriendRequests(inboundRequests, request.target()).remove(request);
     }
 
     Collection<CachedPlayer> getPlayers() {

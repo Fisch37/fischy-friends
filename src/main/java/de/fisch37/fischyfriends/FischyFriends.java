@@ -1,5 +1,6 @@
 package de.fisch37.fischyfriends;
 
+import de.fisch37.fischyfriends.api.FriendRequestManager;
 import de.fisch37.fischyfriends.api.FriendsAPI;
 import de.fisch37.fischyfriends.command.FriendCommand;
 import de.fisch37.fischyfriends.networking.PacketTypes;
@@ -9,6 +10,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 public class FischyFriends implements DedicatedServerModInitializer {
     public static final String MOD_ID = "fischy_friends";
     static FriendsState STATE;
+    public static FriendRequestManager requestManager;
     private static FriendsAPI api;
 
     @Override
@@ -16,7 +18,15 @@ public class FischyFriends implements DedicatedServerModInitializer {
         PacketTypes.register();
         FriendCommand.register();
         api = new FriendsAPIImpl();
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> STATE = FriendsState.getServerState(server));
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            STATE = FriendsState.getServerState(server);
+            requestManager = new FriendRequestManagerImpl(STATE);
+            addDefaultHandlers();
+        });
+    }
+
+    private void addDefaultHandlers() {
+
     }
 
     public static FriendsAPI getAPI() {

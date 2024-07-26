@@ -1,6 +1,7 @@
 package de.fisch37.fischyfriends;
 
 import de.fisch37.fischyfriends.api.CachedPlayer;
+import de.fisch37.fischyfriends.api.FriendRequestManager;
 import de.fisch37.fischyfriends.api.FriendsAPI;
 
 import java.util.*;
@@ -31,5 +32,10 @@ class FriendsAPIImpl implements FriendsAPI {
     @Override
     public Collection<CachedPlayer> getPlayers() {
         return new ArrayList<>(STATE.getPlayers());
+    }
+
+    @Override
+    public FriendRequestManager getRequestManager() {
+        return FischyFriends.requestManager;
     }
 }
