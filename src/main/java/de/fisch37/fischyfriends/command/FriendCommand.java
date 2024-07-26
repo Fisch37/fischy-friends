@@ -24,7 +24,8 @@ public abstract class FriendCommand {
     ) {
         dispatcher.register(literal("friend")
                 .then(literal("add")
-                        .then(argument("player", EntityArgumentType.player())
+                        .then(argument("player", word())
+                                .suggests(new CachedPlayerSuggestionProvider())
                                 .executes(FriendCommand::addFriend)
                 ))
                 .then(literal("remove")

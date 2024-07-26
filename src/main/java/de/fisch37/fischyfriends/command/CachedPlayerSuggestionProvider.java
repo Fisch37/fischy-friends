@@ -5,6 +5,8 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.fisch37.fischyfriends.FischyFriends;
+import de.fisch37.fischyfriends.api.CachedPlayer;
 import net.minecraft.server.command.ServerCommandSource;
 
 import java.util.concurrent.CompletableFuture;
@@ -15,6 +17,10 @@ class CachedPlayerSuggestionProvider implements SuggestionProvider<ServerCommand
             CommandContext<ServerCommandSource> context,
             SuggestionsBuilder builder
     ) throws CommandSyntaxException {
-        return null;
+        for (CachedPlayer suggestedPlayer : FischyFriends.getAPI().getPlayers()) {
+            builder.suggest(suggestedPlayer.name());
+        }
+
+        return builder.buildFuture();
     }
 }
