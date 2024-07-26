@@ -12,6 +12,8 @@ public interface FriendsAPI {
         return getFriends(player.getUuid());
     }
 
+    CachedPlayer getPlayer(UUID uuid);
+
     void addFriendship(UUID a, UUID b);
 
     boolean removeFriendship(UUID a, UUID b);

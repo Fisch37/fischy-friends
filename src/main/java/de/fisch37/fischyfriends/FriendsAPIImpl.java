@@ -15,6 +15,11 @@ class FriendsAPIImpl implements FriendsAPI {
     }
 
     @Override
+    public CachedPlayer getPlayer(UUID uuid) {
+        return STATE.getPlayer(uuid);
+    }
+
+    @Override
     public void addFriendship(UUID a, UUID b) {
         STATE.addFriendship(a, b);
     }

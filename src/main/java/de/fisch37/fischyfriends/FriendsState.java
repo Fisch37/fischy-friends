@@ -12,6 +12,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
@@ -61,6 +62,10 @@ class FriendsState extends PersistentState {
 
     Collection<CachedPlayer> getPlayers() {
         return players.values();
+    }
+
+    @Nullable CachedPlayer getPlayer(UUID uuid) {
+        return players.get(uuid);
     }
 
     @Override
