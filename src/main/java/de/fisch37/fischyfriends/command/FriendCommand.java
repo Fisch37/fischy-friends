@@ -60,6 +60,23 @@ public abstract class FriendCommand {
                                 .requires(source -> source.hasPermissionLevel(3))
                                 .suggests(new CachedPlayerSuggestionProvider(false))
                 ))
+                .then(literal("requests")
+                        .then(literal("accept")
+                                .then(argument("origin", word())
+                                        .suggests(new FriendRequestSuggestionProvider())
+                                        .executes(FriendCommand::acceptRequest)
+                        ))
+                        .then(literal("deny")
+                                .then(argument("origin", word())
+                                        .suggests(new FriendRequestSuggestionProvider())
+                                        .executes(FriendCommand::denyRequest)
+                        ))
+                        .then(literal("cancel")
+                                .then(argument("target", word())
+                                        .suggests(new FriendRequestSuggestionProvider(true))
+                                        .executes(FriendCommand::cancelRequest)
+                        ))
+                )
         );
     }
 
@@ -105,6 +122,18 @@ public abstract class FriendCommand {
     }
 
     private static int listFriends(CommandContext<ServerCommandSource> context) {
+        return 0;
+    }
+
+    private static int acceptRequest(CommandContext<ServerCommandSource> context) {
+        return 0;
+    }
+
+    private static int denyRequest(CommandContext<ServerCommandSource> context) {
+        return 0;
+    }
+
+    private static int cancelRequest(CommandContext<ServerCommandSource> context) {
         return 0;
     }
 }
