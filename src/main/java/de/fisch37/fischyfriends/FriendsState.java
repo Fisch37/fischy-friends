@@ -4,6 +4,7 @@ import de.fisch37.fischyfriends.api.CachedPlayer;
 import de.fisch37.fischyfriends.api.FriendRequest;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
+import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
@@ -67,16 +68,64 @@ class FriendsState extends PersistentState {
         }
         nbt.put("players", playerList);
 
+        NbtCompound playerFriends = new NbtCompound();
+        for (Map.Entry<UUID, Set<UUID>> friendsForPlayer : friendsMap.entrySet()) {
+            NbtList friendList = new NbtList();
+            for (UUID friend : friendsForPlayer.getValue()) {
+                friendList.add(NbtHelper.fromUuid(friend));
+            }
+
+            playerFriends.put(friendsForPlayer.getKey().toString(), friendList);
+        }
+        nbt.put("friends", playerFriends);
+
+        NbtList friendRequests = new NbtList();
+        for (Set<FriendRequest> requests : outboundRequest.values()) {
+            for (FriendRequest request : requests) {
+                friendRequests.add(requestToNbt(request));
+            }
+        }
+        nbt.put("requests", friendRequests);
+
         return nbt;
     }
 
-    private static FriendsState createFromNbt(NbtCompound tag, RegistryWrapper.WrapperLookup registryLookup) {
+    private static FriendsState createFromNbt(NbtCompound nbt, RegistryWrapper.WrapperLookup registryLookup) {
         FriendsState state = new FriendsState();
-        for (NbtElement element : tag.getList("players", NbtElement.COMPOUND_TYPE)) {
+        for (NbtElement element : nbt.getList("players", NbtElement.COMPOUND_TYPE)) {
             state.setPlayer(CachedPlayer.fromNbt((NbtCompound)element));
         }
 
+        NbtCompound friendNbt = nbt.getCompound("friends");
+        for (String playerUuidString : friendNbt.getKeys()) {
+            Set<UUID> friends = state.getAllFriends(UUID.fromString(playerUuidString));
+            NbtList nbtList = friendNbt.getList(playerUuidString, NbtElement.INT_ARRAY_TYPE);
+            for (NbtElement nbtFriend : nbtList) {
+                friends.add(NbtHelper.toUuid(nbtFriend));
+            }
+        }
+
+        NbtList friendRequestsNbt = nbt.getList("requests", NbtElement.COMPOUND_TYPE);
+        for (NbtElement requestNbt : friendRequestsNbt) {
+            state.addFriendRequest(requestFromNbt((NbtCompound) requestNbt));
+        }
+
         return state;
+    }
+
+    // Not very nice but I want to avoid exposing redundant API
+    private static NbtCompound requestToNbt(FriendRequest request) {
+        NbtCompound nbt = new NbtCompound();
+        nbt.putUuid("origin", request.origin());
+        nbt.putUuid("target", request.target());
+        return nbt;
+    }
+
+    private static FriendRequest requestFromNbt(NbtCompound nbt) {
+        return new FriendRequest(
+                nbt.getUuid("origin"),
+                nbt.getUuid("target")
+        );
     }
 
     private static final Type<FriendsState> TYPE = new Type<>(
