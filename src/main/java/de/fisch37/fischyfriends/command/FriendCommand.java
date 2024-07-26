@@ -16,6 +16,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -148,14 +149,39 @@ public abstract class FriendCommand {
     }
 
     private static int listFriends(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
-        ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
-        for(UUID friendUuid : getAPI().getFriends(player)) {
+        ServerCommandSource source = context.getSource();
+        ServerPlayerEntity player = source.getPlayerOrThrow();
+        Collection<UUID> friends = getAPI().getFriends(player);
+        source.sendFeedback(
+                () -> Text.translatableWithFallback(
+                        "fischy_friends.friends_header",
+                        "You have %s friends",
+                        friends.size()
+                ).formatted(Formatting.GOLD)
+                ,
+                false
+        );
+        source.sendFeedback(
+                () -> Text.literal("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                        .formatted(Formatting.RED)
+                ,
+                false
+        );
+        for(UUID friendUuid : friends) {
             CachedPlayer friend = getAPI().getPlayer(friendUuid);
             if (friend == null) {
                 LOGGER.warn("Cache miss for {} in listFriends", friendUuid);
                 continue;
             }
-            context.getSource().sendFeedback(() -> Text.literal(friend.name()), false);
+            source.sendFeedback(
+                    () -> Text.literal("- ")
+                            .formatted(Formatting.RED)
+                            .append(Text.literal(friend.name())
+                                .formatted(Formatting.GOLD)
+                            )
+                    ,
+                    false
+            );
         }
         return 0;
     }
