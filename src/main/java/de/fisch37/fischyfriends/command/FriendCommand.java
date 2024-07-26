@@ -17,7 +17,6 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.UUID;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
@@ -254,7 +253,7 @@ public abstract class FriendCommand {
 
     private static int listRequestsPending(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
         ServerCommandSource source = context.getSource();
-        List<FriendRequest> requests = getAPI().getRequestManager().getOpenRequestsByPlayer(
+        Collection<FriendRequest> requests = getAPI().getRequestManager().getOpenRequestsByPlayer(
                 source.getPlayerOrThrow().getUuid()
         );
         source.sendFeedback(
