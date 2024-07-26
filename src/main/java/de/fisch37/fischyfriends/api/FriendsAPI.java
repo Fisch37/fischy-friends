@@ -1,6 +1,7 @@
 package de.fisch37.fischyfriends.api;
 
 import net.minecraft.server.network.ServerPlayerEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.Set;
@@ -12,7 +13,8 @@ public interface FriendsAPI {
         return getFriends(player.getUuid());
     }
 
-    CachedPlayer getPlayer(UUID uuid);
+    @Nullable CachedPlayer getPlayer(UUID uuid);
+    @Nullable CachedPlayer getPlayer(String name);
 
     void addFriendship(UUID a, UUID b);
 
