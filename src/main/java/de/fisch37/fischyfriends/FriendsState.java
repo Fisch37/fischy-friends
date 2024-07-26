@@ -19,12 +19,14 @@ import java.util.*;
 class FriendsState extends PersistentState {
     private boolean hasRegisteredEvents = false;
     private final Map<UUID, CachedPlayer> players = new HashMap<>();
+    private final Map<String, CachedPlayer> playersByName = new HashMap<>();
     private final Hashtable<UUID, Set<UUID>> friendsMap = new Hashtable<>();
     private final Hashtable<UUID, Set<FriendRequest>> outboundRequest = new Hashtable<>();
     private final Hashtable<UUID, Set<FriendRequest>> inboundRequests = new Hashtable<>();
 
     private void setPlayer(CachedPlayer player) {
         players.put(player.uuid(), player);
+        playersByName.put(player.name(), player);
     }
 
     Set<UUID> getAllFriends(UUID key) {
@@ -66,6 +68,9 @@ class FriendsState extends PersistentState {
 
     @Nullable CachedPlayer getPlayer(UUID uuid) {
         return players.get(uuid);
+    }
+    @Nullable CachedPlayer getPlayer(String name) {
+        return playersByName.get(name);
     }
 
     @Override
