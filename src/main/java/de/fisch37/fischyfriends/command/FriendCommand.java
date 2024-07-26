@@ -1,5 +1,6 @@
 package de.fisch37.fischyfriends.command;
 
+import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -67,17 +68,29 @@ public abstract class FriendCommand {
                         .then(literal("accept")
                                 .then(argument("origin", word())
                                         .suggests(new FriendRequestSuggestionProvider(true))
-                                        .executes(FriendCommand::acceptRequest)
+                                        .executes(requestCommand(
+                                                "origin",
+                                                false,
+                                                FriendCommand::acceptRequest
+                                        ))
                         ))
                         .then(literal("deny")
                                 .then(argument("origin", word())
                                         .suggests(new FriendRequestSuggestionProvider(true))
-                                        .executes(FriendCommand::denyRequest)
+                                        .executes(requestCommand(
+                                                "origin",
+                                                false,
+                                                FriendCommand::denyRequest
+                                        ))
                         ))
                         .then(literal("cancel")
                                 .then(argument("target", word())
                                         .suggests(new FriendRequestSuggestionProvider(false))
-                                        .executes(FriendCommand::cancelRequest)
+                                        .executes(requestCommand(
+                                                "target",
+                                                true,
+                                                FriendCommand::cancelRequest
+                                        ))
                         ))
                 )
         );
@@ -137,15 +150,76 @@ public abstract class FriendCommand {
         return 0;
     }
 
-    private static int acceptRequest(CommandContext<ServerCommandSource> context) {
+    private static Command<ServerCommandSource> requestCommand(
+            String playerArgument,
+            boolean fromOrigin,
+            RequestCommandHandler handler
+    ) {
+        return context -> {
+            ServerPlayerEntity player = context.getSource().getPlayerOrThrow();
+            CachedPlayer otherPlayer = getPlayerByArgument(context, playerArgument);
+            FriendRequest request;
+            if (fromOrigin)
+                request = new FriendRequest(player.getUuid(), otherPlayer.uuid());
+            else
+                request = new FriendRequest(otherPlayer.uuid(), player.getUuid());
+            return handler.execute(context, player, otherPlayer, request);
+        };
+    }
+
+    private static int acceptRequest(
+            CommandContext<ServerCommandSource> context,
+            ServerPlayerEntity player,
+            CachedPlayer origin,
+            FriendRequest request
+    ) {
+        getAPI().getRequestManager().acceptFriendRequest(request);
+        context.getSource().sendFeedback(() -> Text.translatableWithFallback(
+                "fischy_friends.request_accepted",
+                "You are now friends with %s",
+                origin.name()
+        ), false);
         return 0;
     }
 
-    private static int denyRequest(CommandContext<ServerCommandSource> context) {
+    private static int denyRequest(
+            CommandContext<ServerCommandSource> context,
+            ServerPlayerEntity player,
+            CachedPlayer origin,
+            FriendRequest request
+    ) {
+        getAPI().getRequestManager().denyFriendRequest(request);
+        context.getSource().sendFeedback(() -> Text.translatableWithFallback(
+                "fischy_friends.request_denied",
+                "You have denied %s's friend request",
+                origin.name()
+        ), false);
         return 0;
     }
 
-    private static int cancelRequest(CommandContext<ServerCommandSource> context) {
+    private static int cancelRequest(
+            CommandContext<ServerCommandSource> context,
+            ServerPlayerEntity player,
+            CachedPlayer target,
+            FriendRequest request
+    ) {
+        getAPI().getRequestManager().cancelFriendRequest(request);
+        context.getSource().sendFeedback(() -> Text.translatableWithFallback(
+                "fischy_friends.request_cancelled",
+                "Friend request with %s has been cancelled",
+                target.name()
+        ), false);
         return 0;
+    }
+
+
+    @FunctionalInterface
+    private interface RequestCommandHandler {
+        int execute(
+                CommandContext<ServerCommandSource> context,
+                ServerPlayerEntity player,
+                CachedPlayer target,
+                FriendRequest request
+        );
     }
 }
