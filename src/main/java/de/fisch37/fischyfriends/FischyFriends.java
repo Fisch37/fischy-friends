@@ -6,6 +6,7 @@ import de.fisch37.fischyfriends.command.FriendCommand;
 import de.fisch37.fischyfriends.networking.PacketTypes;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.minecraft.server.MinecraftServer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -24,12 +25,12 @@ public class FischyFriends implements DedicatedServerModInitializer {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             STATE = FriendsState.getServerState(server);
             requestManager = new FriendRequestManagerImpl(STATE);
-            addDefaultHandlers();
+            addDefaultHandlers(server);
         });
     }
 
-    private void addDefaultHandlers() {
-
+    private void addDefaultHandlers(MinecraftServer server) {
+        ChatEventHandlers.registerEventHandlers(server);
     }
 
     public static FriendsAPI getAPI() {
