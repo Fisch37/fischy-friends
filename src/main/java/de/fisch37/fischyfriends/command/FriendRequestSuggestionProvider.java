@@ -4,9 +4,18 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import de.fisch37.fischyfriends.FischyFriends;
+import de.fisch37.fischyfriends.api.CachedPlayer;
+import de.fisch37.fischyfriends.api.FriendRequest;
+import de.fisch37.fischyfriends.api.FriendRequestManager;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
 
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+
+import static de.fisch37.fischyfriends.FischyFriends.LOGGER;
 
 public class FriendRequestSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
     private final boolean referenceTarget;
@@ -23,6 +32,27 @@ public class FriendRequestSuggestionProvider implements SuggestionProvider<Serve
             CommandContext<ServerCommandSource> context,
             SuggestionsBuilder builder
     ) {
-        return null;
+        ServerPlayerEntity player = context.getSource().getPlayer();
+        if (player != null) {
+            FriendRequestManager requestManager = FischyFriends.getAPI().getRequestManager();
+            List<FriendRequest> requests = referenceTarget
+                    ? requestManager.getOpenRequestsForPlayer(player.getUuid())
+                    : requestManager.getOpenRequestsByPlayer(player.getUuid());
+
+            for (FriendRequest request : requests) {
+                UUID suggestionUuid = referenceTarget ? request.target() : request.origin();
+                CachedPlayer suggestion = FischyFriends.getAPI().getPlayer(suggestionUuid);
+                if (suggestion == null) {
+                    LOGGER.warn(
+                            "Missed player cache on {} during FriendRequestSuggestionProvider."
+                                    + "This shouldn't happen",
+                            suggestionUuid
+                    );
+                    continue;
+                }
+                builder.suggest(suggestion.name());
+            }
+        }
+        return builder.buildFuture();
     }
 }
