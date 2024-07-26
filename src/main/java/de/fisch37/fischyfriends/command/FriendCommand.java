@@ -25,7 +25,7 @@ public abstract class FriendCommand {
         dispatcher.register(literal("friend")
                 .then(literal("add")
                         .then(argument("player", word())
-                                .suggests(new CachedPlayerSuggestionProvider())
+                                .suggests(new CachedPlayerSuggestionProvider(true))
                                 .executes(FriendCommand::addFriend)
                 ))
                 .then(literal("remove")
@@ -37,7 +37,7 @@ public abstract class FriendCommand {
                         .executes(FriendCommand::listFriends)
                         .then(argument("player", word())
                                 .requires(source -> source.hasPermissionLevel(3))
-                                .suggests(new CachedPlayerSuggestionProvider())
+                                .suggests(new CachedPlayerSuggestionProvider(false))
                         )
                 )
         );
