@@ -2,7 +2,7 @@ package de.fisch37.fischyfriends;
 
 import de.fisch37.fischyfriends.api.FriendRequest;
 import de.fisch37.fischyfriends.api.FriendRequestManager;
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
@@ -60,30 +60,18 @@ class FriendRequestManagerImpl implements FriendRequestManager {
     }
 
     @Override
-    public void registerListener(@Nullable EventType eventType, EventHandler listener) {
-        if (eventType == null) {
-            for (EventType t : EventType.values()) {
-                registerListener(t, listener);
-            }
-        } else {
-            getListenersForEvent(eventType).add(listener);
-        }
+    public void registerListener(@NotNull EventType eventType, @NotNull EventHandler listener) {
+        getListenersForEvent(eventType).add(listener);
     }
 
     @Override
-    public void unregisterListener(@Nullable EventType eventType, EventHandler listener) {
-        if (eventType == null) {
-            for (EventType t : EventType.values()) {
-                unregisterListener(t, listener);
-            }
-        } else {
-            getListenersForEvent(eventType).remove(listener);
-        }
+    public void unregisterListener(@NotNull EventType eventType, @NotNull EventHandler listener) {
+        getListenersForEvent(eventType).remove(listener);
     }
 
     private void callEvent(EventType eventType, FriendRequest request) {
         for (EventHandler listener : getListenersForEvent(eventType)) {
-            listener.handle(eventType, request);
+            listener.handle(request);
         }
     }
 }

@@ -1,6 +1,6 @@
 package de.fisch37.fischyfriends.api;
 
-import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.UUID;
@@ -20,9 +20,21 @@ public interface FriendRequestManager {
 
     List<FriendRequest> getOpenRequestsByPlayer(UUID origin);
 
-    void registerListener(@Nullable EventType eventType, EventHandler listener);
+    void registerListener(@NotNull EventType eventType, @NotNull EventHandler listener);
 
-    void unregisterListener(@Nullable EventType eventType, EventHandler listener);
+    void unregisterListener(@NotNull EventType eventType, @NotNull EventHandler listener);
+
+    default void registerGlobalListener(@NotNull GlobalEventHandler listener) {
+        for (EventType type : EventType.values()) {
+            registerListener(type, request -> listener.handle(type, request));
+        }
+    }
+
+    default void unregisterGlobalListener(@NotNull GlobalEventHandler listener) {
+        for (EventType type : EventType.values()) {
+            unregisterListener(type, request -> listener.handle(type, request));
+        }
+    }
 
     enum EventType {
         CREATED, CANCELLED,
@@ -31,6 +43,11 @@ public interface FriendRequestManager {
 
     @FunctionalInterface
     interface EventHandler {
+        void handle(FriendRequest request);
+    }
+
+    @FunctionalInterface
+    interface GlobalEventHandler {
         void handle(EventType eventType, FriendRequest request);
     }
 }
