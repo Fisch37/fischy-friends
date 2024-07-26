@@ -2,18 +2,21 @@ package de.fisch37.fischyfriends;
 
 import de.fisch37.fischyfriends.api.CachedPlayer;
 import de.fisch37.fischyfriends.api.FriendRequest;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtElement;
 import net.minecraft.nbt.NbtHelper;
 import net.minecraft.nbt.NbtList;
 import net.minecraft.registry.RegistryWrapper;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.PersistentState;
 import net.minecraft.world.World;
 
 import java.util.*;
 
 class FriendsState extends PersistentState {
+    private boolean hasRegisteredEvents = false;
     private final Map<UUID, CachedPlayer> players = new HashMap<>();
     private final Hashtable<UUID, Set<UUID>> friendsMap = new Hashtable<>();
     private final Hashtable<UUID, Set<FriendRequest>> outboundRequest = new Hashtable<>();
@@ -140,6 +143,19 @@ class FriendsState extends PersistentState {
                 .getOrCreate(TYPE, FischyFriends.MOD_ID)
                 ;
         state.markDirty();
+        state.register();
         return state;
+    }
+
+    private void register() {
+        if (hasRegisteredEvents) return;
+        ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
+            ServerPlayerEntity player = handler.getPlayer();
+            players.put(player.getUuid(), new CachedPlayer(
+                    player.getUuid(),
+                    player.getGameProfile().getName()
+            ));
+        });
+        hasRegisteredEvents = true;
     }
 }
