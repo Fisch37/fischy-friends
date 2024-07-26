@@ -18,10 +18,10 @@ import java.util.concurrent.CompletableFuture;
 import static de.fisch37.fischyfriends.FischyFriends.LOGGER;
 
 public class FriendRequestSuggestionProvider implements SuggestionProvider<ServerCommandSource> {
-    private final boolean referenceTarget;
+    private final boolean forTarget;
 
-    public FriendRequestSuggestionProvider(boolean referenceTarget) {
-        this.referenceTarget = referenceTarget;
+    public FriendRequestSuggestionProvider(boolean forTarget) {
+        this.forTarget = forTarget;
     }
     public FriendRequestSuggestionProvider() {
         this(false);
@@ -35,12 +35,12 @@ public class FriendRequestSuggestionProvider implements SuggestionProvider<Serve
         ServerPlayerEntity player = context.getSource().getPlayer();
         if (player != null) {
             FriendRequestManager requestManager = FischyFriends.getAPI().getRequestManager();
-            List<FriendRequest> requests = referenceTarget
+            List<FriendRequest> requests = forTarget
                     ? requestManager.getOpenRequestsForPlayer(player.getUuid())
                     : requestManager.getOpenRequestsByPlayer(player.getUuid());
 
             for (FriendRequest request : requests) {
-                UUID suggestionUuid = referenceTarget ? request.target() : request.origin();
+                UUID suggestionUuid = forTarget ? request.origin() : request.target();
                 CachedPlayer suggestion = FischyFriends.getAPI().getPlayer(suggestionUuid);
                 if (suggestion == null) {
                     LOGGER.warn(
