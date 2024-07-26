@@ -62,6 +62,22 @@ class FriendsState extends PersistentState {
         getFriendRequests(inboundRequests, request.target()).remove(request);
     }
 
+    List<FriendRequest> getRequests() {
+        LinkedList<FriendRequest> requests = new LinkedList<>();
+        for (Set<FriendRequest> requestsPart : outboundRequest.values()) {
+            requests.addAll(requestsPart);
+        }
+        return requests;
+    }
+
+    Set<FriendRequest> getRequestsBy(UUID origin) {
+        return getFriendRequests(outboundRequest, origin);
+    }
+
+    Set<FriendRequest> getRequestsTo(UUID target) {
+        return getFriendRequests(inboundRequests, target);
+    }
+
     Collection<CachedPlayer> getPlayers() {
         return players.values();
     }

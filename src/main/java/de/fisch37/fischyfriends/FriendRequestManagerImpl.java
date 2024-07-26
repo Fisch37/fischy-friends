@@ -40,6 +40,21 @@ class FriendRequestManagerImpl implements FriendRequestManager {
         callEvent(EventType.DENIED, request);
     }
 
+    @Override
+    public List<FriendRequest> getOpenRequests() {
+        return state.getRequests();
+    }
+
+    @Override
+    public List<FriendRequest> getOpenRequestsForPlayer(UUID target) {
+        return new LinkedList<>(state.getRequestsTo(target));
+    }
+
+    @Override
+    public List<FriendRequest> getOpenRequestsByPlayer(UUID origin) {
+        return new LinkedList<>(state.getRequestsBy(origin));
+    }
+
     private Set<EventHandler> getListenersForEvent(EventType eventType) {
         return eventListeners.computeIfAbsent(eventType, k -> new LinkedHashSet<>());
     }
