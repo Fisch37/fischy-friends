@@ -14,7 +14,7 @@ public class FischyFriends implements DedicatedServerModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(FischyFriends.class);
     public static final String MOD_ID = "fischy_friends";
     static FriendsState STATE;
-    public static FriendRequestManager requestManager;
+    static FriendRequestManager requestManager;
     private static FriendsAPI api;
 
     @Override
