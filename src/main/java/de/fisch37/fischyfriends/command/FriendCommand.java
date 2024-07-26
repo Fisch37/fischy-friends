@@ -14,7 +14,9 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
+import java.util.List;
 import java.util.UUID;
 
 import static com.mojang.brigadier.arguments.StringArgumentType.word;
@@ -91,6 +93,14 @@ public abstract class FriendCommand {
                                                 true,
                                                 FriendCommand::cancelRequest
                                         ))
+                        ))
+                        .then(literal("list")
+                                .executes(FriendCommand::listRequestsBoth)
+                                .then(literal("pending")
+                                        .executes(FriendCommand::listRequestsPending)
+                                )
+                                .then(literal("incoming")
+                                        .executes(FriendCommand::listRequestsIncoming)
                         ))
                 )
         );
@@ -209,6 +219,91 @@ public abstract class FriendCommand {
                 "Friend request with %s has been cancelled",
                 target.name()
         ), false);
+        return 0;
+    }
+
+    private static int listRequestsBoth(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        return Math.max(listRequestsPending(context), listRequestsIncoming(context));
+    }
+
+    private static int listRequestsPending(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerCommandSource source = context.getSource();
+        List<FriendRequest> requests = getAPI().getRequestManager().getOpenRequestsByPlayer(
+                source.getPlayerOrThrow().getUuid()
+        );
+        source.sendFeedback(
+                () -> Text.translatableWithFallback(
+                        "fischy_friends.pending_requests_header",
+                        "You have %s friend requests pending",
+                        requests.size()
+                ).formatted(Formatting.GOLD)
+                ,
+                false
+        );
+        source.sendFeedback(
+                () -> Text.literal("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                        .formatted(Formatting.RED)
+                ,
+                false
+        );
+        for (FriendRequest request : requests) {
+            CachedPlayer requestTarget = getAPI().getPlayer(request.target());
+            if (requestTarget == null) {
+                LOGGER.warn("Cache miss for {} in listRequestsPending", request.target());
+                continue;
+            }
+
+            source.sendFeedback(
+                    () -> Text.literal("- ")
+                            .formatted(Formatting.RED)
+                            .append(Text.literal(requestTarget.name()).formatted(Formatting.GOLD))
+                    ,
+                    false
+            );
+        }
+
+        return 0;
+    }
+
+    private static int listRequestsIncoming(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+        ServerCommandSource source = context.getSource();
+        List<FriendRequest> requests = getAPI().getRequestManager().getOpenRequestsForPlayer(
+                source.getPlayerOrThrow().getUuid()
+        );
+        source.sendFeedback(
+                () -> Text.translatableWithFallback(
+                    "fischy_friends.incoming_requests_header",
+                    "You have %s incoming friend requests:",
+                    requests.size()
+                ).formatted(Formatting.GOLD)
+                ,
+                false
+        );
+        source.sendFeedback(
+                () -> Text.literal("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
+                        .formatted(Formatting.RED)
+                ,
+                false
+        );
+        for (FriendRequest request : requests) {
+            CachedPlayer player = getAPI().getPlayer(request.target());
+            if (player == null) {
+                LOGGER.warn("Cache miss for {} in listRequestsIncoming", request.target());
+                continue;
+            }
+
+            source.sendFeedback(
+                    () -> Text.literal("- ")
+                            .formatted(Formatting.RED)
+                            .append(
+                                    Text.literal(player.name())
+                                            .formatted(Formatting.GOLD)
+                            )
+                    ,
+                    false
+            );
+        }
+
         return 0;
     }
 
