@@ -10,10 +10,10 @@ import java.util.UUID;
 
 import static de.fisch37.fischyfriends.networking.PacketTypes.FRIEND_REQUEST;
 
-public record FriendRequest(UUID targetOrOrigin) implements CustomPayload {
-    private static final PacketCodec<RegistryByteBuf, FriendRequest> PACKET_CODEC = PacketCodec.tuple(
-            Uuids.PACKET_CODEC, FriendRequest::targetOrOrigin,
-            FriendRequest::new
+public record FriendRequestPacket(UUID targetOrOrigin) implements CustomPayload {
+    private static final PacketCodec<RegistryByteBuf, FriendRequestPacket> PACKET_CODEC = PacketCodec.tuple(
+            Uuids.PACKET_CODEC, FriendRequestPacket::targetOrOrigin,
+            FriendRequestPacket::new
     );
 
     @Override
