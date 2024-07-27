@@ -7,7 +7,7 @@ import net.minecraft.network.packet.CustomPayload;
 
 import static de.fisch37.fischyfriends.networking.PacketTypes.GET_FRIENDS;
 
-record GetFriends() implements CustomPayload {
+public record GetFriends() implements CustomPayload {
     private static final PacketCodec<RegistryByteBuf, GetFriends> PACKET_CODEC =
             PacketCodec.of((b, n) -> {}, n -> new GetFriends());
 

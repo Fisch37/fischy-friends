@@ -12,7 +12,7 @@ import java.util.List;
 
 import static de.fisch37.fischyfriends.networking.PacketTypes.FRIEND_LIST;
 
-record FriendList(List<CachedPlayer> friends) implements CustomPayload {
+public record FriendList(List<CachedPlayer> friends) implements CustomPayload {
     private static final PacketCodec<RegistryByteBuf, FriendList> PACKET_CODEC = PacketCodec.tuple(
             PacketCodecs.collection(ArrayList::new, CachedPlayer.PACKET_CODEC),
             FriendList::friends,
