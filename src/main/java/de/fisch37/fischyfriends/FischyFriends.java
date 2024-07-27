@@ -29,6 +29,7 @@ public class FischyFriends implements DedicatedServerModInitializer {
     @Override
     public void onInitializeServer() {
         PacketTypes.register();
+        NetworkHandler.register();
         FriendCommand.register();
         api = new FriendsAPIImpl();
 
@@ -63,6 +64,7 @@ public class FischyFriends implements DedicatedServerModInitializer {
 
     private void addDefaultHandlers(MinecraftServer server) {
         ChatEventHandlers.registerEventHandlers(server);
+        NetworkHandler.registerEventHandlers(server);
     }
 
     public static FriendsAPI getAPI() {
