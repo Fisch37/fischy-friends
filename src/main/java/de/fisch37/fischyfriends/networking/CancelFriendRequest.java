@@ -8,7 +8,6 @@ import net.minecraft.util.Uuids;
 
 import java.util.UUID;
 
-import static de.fisch37.fischyfriends.networking.PacketTypes.FRIEND_REQUEST;
 import static de.fisch37.fischyfriends.networking.PacketTypes.FRIEND_REQUEST_CANCEL;
 
 public record CancelFriendRequest(UUID targetOrOrigin) implements CustomPayload {
@@ -19,7 +18,7 @@ public record CancelFriendRequest(UUID targetOrOrigin) implements CustomPayload 
 
     @Override
     public Id<? extends CustomPayload> getId() {
-        return FRIEND_REQUEST;
+        return FRIEND_REQUEST_CANCEL;
     }
 
     static void register() {

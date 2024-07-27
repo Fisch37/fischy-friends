@@ -18,7 +18,7 @@ public record DenyFriendRequest(UUID targetOrOrigin) implements CustomPayload {
 
     @Override
     public Id<? extends CustomPayload> getId() {
-        return FRIEND_REQUEST;
+        return FRIEND_REQUEST_DENY;
     }
 
     static void register() {
