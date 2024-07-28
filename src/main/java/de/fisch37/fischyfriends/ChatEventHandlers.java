@@ -50,7 +50,7 @@ abstract class ChatEventHandlers {
                                         )
                                 ))
                         )
-                        .formatted(Formatting.GREEN)
+                        .formatted(Colors.SUCCESS)
                 )
                 .append(" ")
                 .append(Text.literal("[✖]")
@@ -67,7 +67,7 @@ abstract class ChatEventHandlers {
                                         )
                                 ))
                         )
-                        .formatted(Formatting.RED)
+                        .formatted(Colors.FAILURE)
                 );
     }
 
@@ -98,7 +98,7 @@ abstract class ChatEventHandlers {
                         "fischy_friends.request_incoming",
                         "%s has sent you a friend request!",
                         playerName(origin)
-                ).formatted(Formatting.GOLD)
+                ).formatted(Colors.PRIMARY)
                 .append(" ")
                 .append(makeAcceptDenyText(origin == null ? null : origin.name()))
         );
@@ -112,7 +112,7 @@ abstract class ChatEventHandlers {
                         "fischy_friends.request_cancelled",
                         "You have cancelled your friend request to %s",
                         playerName(target)
-                ).formatted(Formatting.GOLD)
+                ).formatted(Colors.PRIMARY)
         );
     }
 
@@ -124,7 +124,7 @@ abstract class ChatEventHandlers {
                         "fischy_friends.request_denied",
                         "%s has denied your friend request",
                         playerName(target)
-                ).formatted(Formatting.RED)
+                ).formatted(Colors.PRIMARY)
         );
     }
 
@@ -136,7 +136,7 @@ abstract class ChatEventHandlers {
                         "fischy_friends.request_accepted",
                         "%s has accepted your friend request",
                         playerName(target)
-                ).formatted(Formatting.GOLD)
+                ).formatted(Colors.PRIMARY)
         );
     }
 }

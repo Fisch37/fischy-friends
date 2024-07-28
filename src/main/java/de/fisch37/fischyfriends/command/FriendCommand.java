@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import de.fisch37.fischyfriends.Colors;
 import de.fisch37.fischyfriends.api.CachedPlayer;
 import de.fisch37.fischyfriends.api.FriendRequest;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -14,7 +15,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 
 import java.util.Collection;
 import java.util.UUID;
@@ -156,13 +156,13 @@ public abstract class FriendCommand {
                         "fischy_friends.friends_header",
                         "You have %s friends",
                         friends.size()
-                ).formatted(Formatting.GOLD)
+                ).formatted(Colors.PRIMARY)
                 ,
                 false
         );
         source.sendFeedback(
                 () -> Text.literal("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-                        .formatted(Formatting.RED)
+                        .formatted(Colors.SECONDARY)
                 ,
                 false
         );
@@ -174,9 +174,9 @@ public abstract class FriendCommand {
             }
             source.sendFeedback(
                     () -> Text.literal("- ")
-                            .formatted(Formatting.RED)
+                            .formatted(Colors.SECONDARY)
                             .append(Text.literal(friend.name())
-                                .formatted(Formatting.GOLD)
+                                .formatted(Colors.PRIMARY)
                             )
                     ,
                     false
@@ -261,13 +261,13 @@ public abstract class FriendCommand {
                         "fischy_friends.pending_requests_header",
                         "You have %s friend requests pending",
                         requests.size()
-                ).formatted(Formatting.GOLD)
+                ).formatted(Colors.PRIMARY)
                 ,
                 false
         );
         source.sendFeedback(
                 () -> Text.literal("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-                        .formatted(Formatting.RED)
+                        .formatted(Colors.SECONDARY)
                 ,
                 false
         );
@@ -280,8 +280,8 @@ public abstract class FriendCommand {
 
             source.sendFeedback(
                     () -> Text.literal("- ")
-                            .formatted(Formatting.RED)
-                            .append(Text.literal(requestTarget.name()).formatted(Formatting.GOLD))
+                            .formatted(Colors.SECONDARY)
+                            .append(Text.literal(requestTarget.name()).formatted(Colors.PRIMARY))
                     ,
                     false
             );
@@ -300,13 +300,13 @@ public abstract class FriendCommand {
                     "fischy_friends.incoming_requests_header",
                     "You have %s incoming friend requests:",
                     requests.size()
-                ).formatted(Formatting.GOLD)
+                ).formatted(Colors.PRIMARY)
                 ,
                 false
         );
         source.sendFeedback(
                 () -> Text.literal("-=-=-=-=-=-=-=-=-=-=-=-=-=-=-")
-                        .formatted(Formatting.RED)
+                        .formatted(Colors.SECONDARY)
                 ,
                 false
         );
@@ -319,10 +319,10 @@ public abstract class FriendCommand {
 
             source.sendFeedback(
                     () -> Text.literal("- ")
-                            .formatted(Formatting.RED)
+                            .formatted(Colors.SECONDARY)
                             .append(
                                     Text.literal(player.name())
-                                            .formatted(Formatting.GOLD)
+                                            .formatted(Colors.PRIMARY)
                             )
                     ,
                     false

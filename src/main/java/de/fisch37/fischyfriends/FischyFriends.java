@@ -13,7 +13,6 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.network.ServerPlayNetworkHandler;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.util.Formatting;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -22,9 +21,11 @@ import java.util.Collection;
 public class FischyFriends implements DedicatedServerModInitializer {
     public static final Logger LOGGER = LoggerFactory.getLogger(FischyFriends.class);
     public static final String MOD_ID = "fischy_friends";
+
     static FriendsState STATE;
     static FriendRequestManager requestManager;
     private static FriendsAPI api;
+
 
     @Override
     public void onInitializeServer() {
@@ -49,13 +50,13 @@ public class FischyFriends implements DedicatedServerModInitializer {
                     "fischy_friends.welcome_open_requests",
                     "Hello! You have %s requests open:",
                     requests.size()
-            ).formatted(Formatting.GOLD));
+            ).formatted(Colors.PRIMARY));
             for (FriendRequest request : requests) {
                 CachedPlayer origin = getAPI().getPlayer(request.origin());
                 player.sendMessage(Text.literal("")
-                        .append(Text.literal("- ").formatted(Formatting.RED))
+                        .append(Text.literal("- ").formatted(Colors.SECONDARY))
                         .append(Text.literal(origin == null ? "UNKNOWN PLAYER" : origin.name())
-                                .formatted(Formatting.GOLD)
+                                .formatted(Colors.PRIMARY)
                         )
                         .append(" ")
                         .append(ChatEventHandlers.makeAcceptDenyText(origin == null ? null : origin.name()))
