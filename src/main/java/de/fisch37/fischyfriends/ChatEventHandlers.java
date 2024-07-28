@@ -6,6 +6,9 @@ import de.fisch37.fischyfriends.api.FriendRequestManager;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.PlayerManager;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.ClickEvent;
+import net.minecraft.text.HoverEvent;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import org.jetbrains.annotations.Nullable;
@@ -16,6 +19,9 @@ import static de.fisch37.fischyfriends.FischyFriends.getAPI;
 import static de.fisch37.fischyfriends.api.FriendRequestManager.EventType;
 
 abstract class ChatEventHandlers {
+    private static final String REQ_ACCEPT_COMMAND = "/friend requests accept %s";
+    private static final String REQ_DENY_COMMAND = "/friend requests deny %s";
+
     private static PlayerManager playerManager;
 
     static void registerEventHandlers(MinecraftServer server) {
@@ -24,6 +30,45 @@ abstract class ChatEventHandlers {
         registerListener(EventType.CANCELLED, ChatEventHandlers::requestCancelled);
         registerListener(EventType.DENIED, ChatEventHandlers::requestDenied);
         registerListener(EventType.ACCEPTED, ChatEventHandlers::requestAccepted);
+    }
+
+    static Text makeAcceptDenyText(@Nullable String target) {
+        if (target == null)
+            return Text.literal("UNKNOWN PLAYER");
+        return Text.literal("")
+                .append(Text.literal("[✔]")
+                        .setStyle(Style.EMPTY
+                                .withClickEvent(new ClickEvent(
+                                        ClickEvent.Action.SUGGEST_COMMAND,
+                                        REQ_ACCEPT_COMMAND.formatted(target)
+                                ))
+                                .withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Text.translatableWithFallback(
+                                                "fischy_friends.request_accept_button",
+                                                "Click to accept the friend request"
+                                        )
+                                ))
+                        )
+                        .formatted(Formatting.GREEN)
+                )
+                .append(" ")
+                .append(Text.literal("[✖]")
+                        .setStyle(Style.EMPTY
+                                .withClickEvent(new ClickEvent(
+                                        ClickEvent.Action.SUGGEST_COMMAND,
+                                        REQ_DENY_COMMAND.formatted(target)
+                                ))
+                                .withHoverEvent(new HoverEvent(
+                                        HoverEvent.Action.SHOW_TEXT,
+                                        Text.translatableWithFallback(
+                                                "fischy_friends.request_deny_button",
+                                                "Click to deny the friend request"
+                                        )
+                                ))
+                        )
+                        .formatted(Formatting.RED)
+                );
     }
 
     private static void registerListener(EventType type, FriendRequestManager.EventHandler listener) {
@@ -54,6 +99,8 @@ abstract class ChatEventHandlers {
                         "%s has sent you a friend request!",
                         playerName(origin)
                 ).formatted(Formatting.GOLD)
+                .append(" ")
+                .append(makeAcceptDenyText(origin == null ? null : origin.name()))
         );
     }
 

@@ -43,7 +43,7 @@ public class FischyFriends implements DedicatedServerModInitializer {
 
     private void onJoinStatusMessage(ServerPlayNetworkHandler handler) {
         ServerPlayerEntity player = handler.player;
-        Collection<FriendRequest> requests = requestManager.getOpenRequestsByPlayer(player.getUuid());
+        Collection<FriendRequest> requests = requestManager.getOpenRequestsForPlayer(player.getUuid());
         if (!requests.isEmpty()) {
             player.sendMessage(Text.translatableWithFallback(
                     "fischy_friends.welcome_open_requests",
@@ -52,11 +52,13 @@ public class FischyFriends implements DedicatedServerModInitializer {
             ).formatted(Formatting.GOLD));
             for (FriendRequest request : requests) {
                 CachedPlayer origin = getAPI().getPlayer(request.origin());
-                player.sendMessage(Text.literal("- ")
-                        .formatted(Formatting.RED)
-                        .append(Text.literal(
-                                origin == null ? "UNKNOWN PLAYER" : origin.name()
-                        ).formatted(Formatting.GOLD))
+                player.sendMessage(Text.literal("")
+                        .append(Text.literal("- ").formatted(Formatting.RED))
+                        .append(Text.literal(origin == null ? "UNKNOWN PLAYER" : origin.name())
+                                .formatted(Formatting.GOLD)
+                        )
+                        .append(" ")
+                        .append(ChatEventHandlers.makeAcceptDenyText(origin == null ? null : origin.name()))
                 );
             }
         }
