@@ -10,6 +10,7 @@ public class PacketTypes {
     public static final Id<GetFriends> GET_FRIENDS = id("get_friends");
     public static final Id<FriendList> FRIEND_LIST = id("friend_list");
 
+    public static final Id<FriendRemovePacket> FRIEND_REMOVE_REQ = id("friend_remove_req");
     public static final Id<FriendRemoved> FRIEND_REMOVED = id("friend_removed");
 
     public static final Id<FriendRequestPacket> FRIEND_REQUEST = id("friend_request");
@@ -25,6 +26,7 @@ public class PacketTypes {
         GetFriends.register();
         FriendList.register();
 
+        FriendRemovePacket.register();
         FriendRemoved.register();
 
         FriendRequestPacket.register();

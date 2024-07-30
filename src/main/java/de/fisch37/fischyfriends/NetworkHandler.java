@@ -28,6 +28,7 @@ abstract class NetworkHandler {
         ServerPlayNetworking.registerGlobalReceiver(FRIEND_REQUEST_CANCEL, NetworkHandler::cancelFriendRequest);
         ServerPlayNetworking.registerGlobalReceiver(FRIEND_REQUEST_ACCEPT, NetworkHandler::acceptFriendRequest);
         ServerPlayNetworking.registerGlobalReceiver(FRIEND_REQUEST_DENY, NetworkHandler::denyFriendRequest);
+        ServerPlayNetworking.registerGlobalReceiver(FRIEND_REMOVE_REQ, NetworkHandler::removeFriend);
     }
 
     static void registerEventHandlers(MinecraftServer server) {
@@ -66,6 +67,10 @@ abstract class NetworkHandler {
         }
 
         context.responseSender().sendPacket(new FriendList(friends));
+    }
+
+    private static void removeFriend(FriendRemovePacket packet, ServerPlayNetworking.Context context) {
+        getAPI().removeFriendship(context.player().getUuid(), packet.friend());
     }
 
     /**
