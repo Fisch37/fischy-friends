@@ -17,7 +17,7 @@ class FriendRequestManagerImpl implements FriendRequestManager {
 
     @Override
     public void addFriendRequest(FriendRequest request) {
-        state.addFriendRequest(request);
+        FischyFriends.getAPI().addFriendship(request.origin(), request.target());
         callEvent(EventType.CREATED, request);
     }
 
