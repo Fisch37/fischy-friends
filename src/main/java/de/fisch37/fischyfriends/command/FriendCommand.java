@@ -139,6 +139,7 @@ public abstract class FriendCommand {
         if (!getAPI().getFriends(player.getUuid()).contains(target.uuid())) {
             throw NOT_A_FRIEND.create(target.name());
         }
+        getAPI().removeFriendship(player.getUuid(), target.uuid());
         context.getSource().sendFeedback(() -> Text.translatableWithFallback(
                 "fischy_friends.friend_removed",
                 "Removed %s from your list of friends",
