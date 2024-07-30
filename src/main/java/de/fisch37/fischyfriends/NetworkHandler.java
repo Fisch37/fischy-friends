@@ -3,6 +3,7 @@ package de.fisch37.fischyfriends;
 import de.fisch37.fischyfriends.api.CachedPlayer;
 import de.fisch37.fischyfriends.api.FriendRequest;
 import de.fisch37.fischyfriends.api.FriendRequestManager;
+import de.fisch37.fischyfriends.api.FriendsAPI;
 import de.fisch37.fischyfriends.networking.*;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.network.packet.CustomPayload;
@@ -31,6 +32,8 @@ abstract class NetworkHandler {
 
     static void registerEventHandlers(MinecraftServer server) {
         NetworkHandler.server = server;
+
+        getAPI().registerFriendRemovedListener(NetworkHandler::onFriendRemoved);
 
         registerListener(EventType.CREATED, NetworkHandler::onFriendRequest);
         registerListener(EventType.CANCELLED, NetworkHandler::onFriendRequestCancelled);
@@ -98,6 +101,12 @@ abstract class NetworkHandler {
                 player,
                 packet
         ));
+    }
+
+    private static void onFriendRemoved(FriendsAPI.Friendship friendship) {
+        final UUID a = friendship.a(), b = friendship.b();
+        maySend(a, new FriendRemoved(b));
+        maySend(b, new FriendRemoved(a));
     }
 
     private static void onFriendRequest(FriendRequest request) {
