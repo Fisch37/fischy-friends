@@ -177,7 +177,7 @@ class FriendsState extends PersistentState {
         if (hasRegisteredEvents) return;
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> {
             ServerPlayerEntity player = handler.getPlayer();
-            players.put(player.getUuid(), new CachedPlayer(
+            setPlayer(new CachedPlayer(
                     player.getUuid(),
                     player.getGameProfile().getName()
             ));
