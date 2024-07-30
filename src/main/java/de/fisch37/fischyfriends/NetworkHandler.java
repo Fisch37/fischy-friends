@@ -109,10 +109,10 @@ abstract class NetworkHandler {
     }
 
     private static void onFriendRequestAccepted(FriendRequest request) {
-        maySend(request.target(), new AcceptFriendRequest(request.target()));
+        maySend(request.origin(), new AcceptFriendRequest(request.target()));
     }
 
     private static void onFriendRequestDenied(FriendRequest request) {
-        maySend(request.target(), new DenyFriendRequest(request.target()));
+        maySend(request.origin(), new DenyFriendRequest(request.target()));
     }
 }
