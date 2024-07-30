@@ -5,10 +5,13 @@ import de.fisch37.fischyfriends.api.FriendRequestManager;
 import de.fisch37.fischyfriends.api.FriendsAPI;
 
 import java.util.*;
+import java.util.function.Consumer;
 
 import static de.fisch37.fischyfriends.FischyFriends.STATE;
 
 class FriendsAPIImpl implements FriendsAPI {
+    private final LinkedHashSet<Consumer<Friendship>> friendshipRemovedListeners = new LinkedHashSet<>();
+
     @Override
     public Set<UUID> getFriends(UUID player) {
         return new HashSet<>(STATE.getAllFriends(player));
@@ -30,7 +33,13 @@ class FriendsAPIImpl implements FriendsAPI {
 
     @Override
     public boolean removeFriendship(UUID a, UUID b) {
-        return STATE.removeFriendship(a, b);
+        boolean hasDeleted = STATE.removeFriendship(a, b);
+        if (hasDeleted) {
+            for (Consumer<Friendship> listener : friendshipRemovedListeners) {
+                listener.accept(new Friendship(a,b));
+            }
+        }
+        return hasDeleted;
     }
 
     @Override
@@ -46,5 +55,15 @@ class FriendsAPIImpl implements FriendsAPI {
     @Override
     public FriendRequestManager getRequestManager() {
         return FischyFriends.requestManager;
+    }
+
+    @Override
+    public void registerFriendRemovedListener(Consumer<Friendship> handler) {
+        friendshipRemovedListeners.add(handler);
+    }
+
+    @Override
+    public void unregisterFriendRemovedListener(Consumer<Friendship> handler) {
+        friendshipRemovedListeners.remove(handler);
     }
 }
