@@ -7,6 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
 import de.fisch37.fischyfriends.Colors;
+import de.fisch37.fischyfriends.TextFormatter;
 import de.fisch37.fischyfriends.api.CachedPlayer;
 import de.fisch37.fischyfriends.api.FriendRequest;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
@@ -174,11 +175,7 @@ public abstract class FriendCommand {
                 continue;
             }
             source.sendFeedback(
-                    () -> Text.literal("- ")
-                            .formatted(Colors.SECONDARY)
-                            .append(Text.literal(friend.name())
-                                .formatted(Colors.PRIMARY)
-                            )
+                    () -> TextFormatter.makeFriendListing(friend)
                     ,
                     false
             );

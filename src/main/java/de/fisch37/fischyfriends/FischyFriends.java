@@ -59,7 +59,7 @@ public class FischyFriends implements DedicatedServerModInitializer {
                                 .formatted(Colors.PRIMARY)
                         )
                         .append(" ")
-                        .append(ChatEventHandlers.makeAcceptDenyText(origin == null ? null : origin.name()))
+                        .append(TextFormatter.makeAcceptDenyText(origin == null ? null : origin.name()))
                 );
             }
         }

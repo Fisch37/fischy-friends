@@ -19,8 +19,6 @@ import static de.fisch37.fischyfriends.FischyFriends.getAPI;
 import static de.fisch37.fischyfriends.api.FriendRequestManager.EventType;
 
 abstract class ChatEventHandlers {
-    private static final String REQ_ACCEPT_COMMAND = "/friend requests accept %s";
-    private static final String REQ_DENY_COMMAND = "/friend requests deny %s";
 
     private static PlayerManager playerManager;
 
@@ -30,45 +28,6 @@ abstract class ChatEventHandlers {
         registerListener(EventType.CANCELLED, ChatEventHandlers::requestCancelled);
         registerListener(EventType.DENIED, ChatEventHandlers::requestDenied);
         registerListener(EventType.ACCEPTED, ChatEventHandlers::requestAccepted);
-    }
-
-    static Text makeAcceptDenyText(@Nullable String target) {
-        if (target == null)
-            return Text.literal("UNKNOWN PLAYER");
-        return Text.literal("")
-                .append(Text.literal("[✔]")
-                        .setStyle(Style.EMPTY
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.SUGGEST_COMMAND,
-                                        REQ_ACCEPT_COMMAND.formatted(target)
-                                ))
-                                .withHoverEvent(new HoverEvent(
-                                        HoverEvent.Action.SHOW_TEXT,
-                                        Text.translatableWithFallback(
-                                                "fischy_friends.request_accept_button",
-                                                "Click to accept the friend request"
-                                        )
-                                ))
-                        )
-                        .formatted(Colors.SUCCESS)
-                )
-                .append(" ")
-                .append(Text.literal("[✖]")
-                        .setStyle(Style.EMPTY
-                                .withClickEvent(new ClickEvent(
-                                        ClickEvent.Action.SUGGEST_COMMAND,
-                                        REQ_DENY_COMMAND.formatted(target)
-                                ))
-                                .withHoverEvent(new HoverEvent(
-                                        HoverEvent.Action.SHOW_TEXT,
-                                        Text.translatableWithFallback(
-                                                "fischy_friends.request_deny_button",
-                                                "Click to deny the friend request"
-                                        )
-                                ))
-                        )
-                        .formatted(Colors.FAILURE)
-                );
     }
 
     private static void registerListener(EventType type, FriendRequestManager.EventHandler listener) {
@@ -100,7 +59,7 @@ abstract class ChatEventHandlers {
                         playerName(origin)
                 ).formatted(Colors.PRIMARY)
                 .append(" ")
-                .append(makeAcceptDenyText(origin == null ? null : origin.name()))
+                .append(TextFormatter.makeAcceptDenyText(origin == null ? null : origin.name()))
         );
     }
 
