@@ -44,7 +44,7 @@ class FriendsState extends PersistentState {
 
     boolean removeFriendship(UUID a, UUID b) {
         return getAllFriends(a).remove(b)
-                || getAllFriends(b).remove(a)
+                | getAllFriends(b).remove(a)  // Must be bitwise OR not logical OR (because of path elimination)
                 ;
     }
 
