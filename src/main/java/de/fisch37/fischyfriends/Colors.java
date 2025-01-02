@@ -7,6 +7,7 @@ public abstract class Colors {
             PRIMARY = Formatting.GOLD,
             SECONDARY = Formatting.RED,
             SUCCESS = Formatting.GREEN,
-            FAILURE = Formatting.RED
+            FAILURE = Formatting.RED,
+            PLAYER = Formatting.YELLOW
                     ;
 }

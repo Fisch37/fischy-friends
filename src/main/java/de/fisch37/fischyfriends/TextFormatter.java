@@ -55,6 +55,7 @@ public abstract class TextFormatter {
     public static Text makeFriendListing(@NotNull CachedPlayer friend) {
         return Text.literal("")
                 .append(Text.literal("- ").formatted(Colors.SECONDARY))
+                .append(Text.literal(friend.name()).formatted(Colors.PLAYER))
                 .append(" ")
                 .append(Text.literal("[-]")
                         .formatted(Colors.FAILURE)
