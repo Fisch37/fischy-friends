@@ -8,6 +8,7 @@ public abstract class Colors {
             SECONDARY = Formatting.RED,
             SUCCESS = Formatting.GREEN,
             FAILURE = Formatting.RED,
-            PLAYER = Formatting.YELLOW
+            PLAYER = Formatting.YELLOW,
+            BUTTON = Formatting.BLUE
                     ;
 }

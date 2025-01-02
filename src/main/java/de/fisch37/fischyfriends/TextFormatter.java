@@ -58,7 +58,7 @@ public abstract class TextFormatter {
                 .append(Text.literal(friend.name()).formatted(Colors.PLAYER))
                 .append(" ")
                 .append(Text.literal("[-]")
-                        .formatted(Colors.FAILURE)
+                        .formatted(Colors.BUTTON)
                         .styled(style -> style
                                 .withHoverEvent(new HoverEvent(
                                         HoverEvent.Action.SHOW_TEXT,
